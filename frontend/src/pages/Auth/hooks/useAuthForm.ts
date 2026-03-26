@@ -10,11 +10,11 @@ export const useAuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   
   // Registration fields
-  const [firmaAdi, setFirmaAdi] = useState('');
-  const [firmaUnvan, setFirmaUnvan] = useState('');
-  const [vergiDairesi, setVergiDairesi] = useState('');
-  const [vergiNo, setVergiNo] = useState('');
-  const [firmaBuyuklugu, setFirmaBuyuklugu] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyTitle, setCompanyTitle] = useState('');
+  const [taxOffice, setTaxOffice] = useState('');
+  const [taxNumber, setTaxNumber] = useState('');
+  const [companySize, setCompanySize] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,16 +45,16 @@ export const useAuthForm = () => {
     setConfirmPassword,
     showPassword,
     togglePasswordVisibility,
-    firmaAdi,
-    setFirmaAdi,
-    firmaUnvan,
-    setFirmaUnvan,
-    vergiDairesi,
-    setVergiDairesi,
-    vergiNo,
-    setVergiNo,
-    firmaBuyuklugu,
-    setFirmaBuyuklugu,
+    companyName,
+    setCompanyName,
+    companyTitle,
+    setCompanyTitle,
+    taxOffice,
+    setTaxOffice,
+    taxNumber,
+    setTaxNumber,
+    companySize,
+    setCompanySize,
     isLoading,
     handleSubmit
   };

@@ -7,16 +7,20 @@ import QuantitySelector from '../../components/QuantitySelector';
 import { HiOutlineBadgeCheck, HiOutlineShoppingBag, HiOutlineDocumentReport, HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { useProductDetail } from './hooks/useProductDetail';
 import { useParams } from 'next/navigation';
+import { useCartContext } from '../../context/CartContext';
 
 const ProductDetailPage: React.FC = () => {
-  const { id } = useParams();
-  const { product } = useProductDetail(id as string);
+  const params = useParams();
+  const id = params?.id as string;
+  const { product } = useProductDetail(id);
+  const { addToCart } = useCartContext();
   const [currentImage, setCurrentImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = () => {
     setIsAdding(true);
+    addToCart(product, quantity);
     setTimeout(() => setIsAdding(false), 800);
   };
 

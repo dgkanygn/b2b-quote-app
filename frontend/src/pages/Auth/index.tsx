@@ -27,11 +27,11 @@ const AuthPage: React.FC = () => {
     setConfirmPassword,
     showPassword,
     togglePasswordVisibility,
-    setFirmaAdi,
-    setFirmaUnvan,
-    setVergiDairesi,
-    setVergiNo,
-    setFirmaBuyuklugu,
+    setCompanyName,
+    setCompanyTitle,
+    setTaxOffice,
+    setTaxNumber,
+    setCompanySize,
     isLoading, 
     handleSubmit 
   } = useAuthForm();
@@ -81,7 +81,7 @@ const AuthPage: React.FC = () => {
                             type="text" 
                             required
                             placeholder="Firma Adı" 
-                            onChange={(e) => setFirmaAdi(e.target.value)}
+                            onChange={(e) => setCompanyName(e.target.value)}
                             className="w-full h-14 pl-14 pr-5 bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl outline-none focus:border-blue-600/50 transition-all font-semibold text-sm text-gray-900 dark:text-white" 
                           />
                         </div>
@@ -92,7 +92,7 @@ const AuthPage: React.FC = () => {
                             type="text" 
                             required
                             placeholder="Firma Unvanı" 
-                            onChange={(e) => setFirmaUnvan(e.target.value)}
+                            onChange={(e) => setCompanyTitle(e.target.value)}
                             className="w-full h-14 pl-14 pr-5 bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl outline-none focus:border-blue-600/50 transition-all font-semibold text-sm text-gray-900 dark:text-white" 
                           />
                         </div>
@@ -104,7 +104,7 @@ const AuthPage: React.FC = () => {
                               type="text" 
                               required
                               placeholder="Vergi Dairesi" 
-                              onChange={(e) => setVergiDairesi(e.target.value)}
+                              onChange={(e) => setTaxOffice(e.target.value)}
                               className="w-full h-14 pl-14 pr-5 bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl outline-none focus:border-blue-600/50 transition-all font-semibold text-sm text-gray-900 dark:text-white" 
                             />
                           </div>
@@ -113,7 +113,7 @@ const AuthPage: React.FC = () => {
                               type="text" 
                               required
                               placeholder="Vergi No" 
-                              onChange={(e) => setVergiNo(e.target.value)}
+                              onChange={(e) => setTaxNumber(e.target.value)}
                               className="w-full h-14 px-5 bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl outline-none focus:border-blue-600/50 transition-all font-semibold text-sm text-gray-900 dark:text-white" 
                             />
                           </div>
@@ -123,7 +123,7 @@ const AuthPage: React.FC = () => {
                           <HiOutlineUserGroup className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                           <select 
                             required
-                            onChange={(e) => setFirmaBuyuklugu(e.target.value)}
+                            onChange={(e) => setCompanySize(e.target.value)}
                             className="w-full h-14 pl-14 pr-5 bg-gray-50 dark:bg-black border border-gray-200 dark:border-white/10 rounded-xl outline-none focus:border-blue-600/50 transition-all font-semibold text-sm text-gray-900 dark:text-white appearance-none cursor-pointer"
                           >
                              <option value="">Firma Büyüklüğü Seçin</option>

@@ -1,4 +1,4 @@
-import AuthPage from "../../src/pages/Auth";
+import AuthPage from "../../pages/Auth";
 
 export default function Page() {
   return <AuthPage />;

@@ -5,19 +5,47 @@ import Navbar from '../../components/Navbar';
 import Container from '../../components/Container';
 import QuantitySelector from '../../components/QuantitySelector';
 import { HiOutlineTrash, HiOutlineCloudDownload, HiOutlineChevronDoubleRight, HiOutlineArchive } from 'react-icons/hi';
-import { useCart } from './hooks/useCart';
 import Link from 'next/link';
+import { useAuth } from '../../context/AuthContext';
+import QuoteModal from './components/QuoteModal';
+import { useCart } from './hooks/useCart';
 
 const CartPage: React.FC = () => {
-  const { items, updateQuantity, removeItem, isEmpty } = useCart();
-  const [isRequesting, setIsRequesting] = useState(false);
+  const { items, updateQuantity, removeItem, isEmpty, clearCart } = useCart();
+  const { isLoggedIn, user } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleQuoteRequest = () => {
-    setIsRequesting(true);
+  const handleQuoteRequest = (formData: any) => {
+    // Collect quote request items mapping to the new structure
+    const request_items = items.map((item: any) => ({
+      id: Math.random().toString(36).substr(2, 9),
+      request_id: 'pending...',
+      product_id: item.product.id,
+      quantity: item.quantity,
+      offered_price: 0 // Will be set by admin
+    }));
+
+    // Generate the main request JSON
+    const request = {
+      id: `REQ-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+      customer_id: isLoggedIn ? 'USER-ID-123' : null, // Would come from real user ID
+      guest_email: isLoggedIn ? user?.email : formData.guest_email,
+      guest_company_name: isLoggedIn ? user?.companyName : formData.guest_company_name,
+      note: formData.note,
+      status: 'pending',
+      total_price: 0, // Calculated later
+      created_at: new Date().toISOString(),
+      request_items: request_items
+    };
+
+    console.log("=== NEW QUOTE REQUEST JSON ===");
+    console.log(JSON.stringify(request, null, 2));
+    
     setTimeout(() => {
-      setIsRequesting(false);
-      alert("Teklif isteğiniz başarıyla oluşturuldu!");
-    }, 1500);
+      clearCart();
+      setIsModalOpen(false); // Close modal after submission
+      alert("Teklif talebiniz başarıyla oluşturuldu! Konsoldan JSON çıktısını inceleyebilirsiniz.");
+    }, 500);
   };
 
   const handleExcelDownload = () => {
@@ -59,24 +87,24 @@ const CartPage: React.FC = () => {
                  </div>
                ) : (
                  <div className="space-y-6">
-                    {items.map((item) => (
+                    {items.map((item: any) => (
                       <div 
                         key={item.product.id} 
                         className="group flex flex-col sm:flex-row items-center gap-8 p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-gray-100 dark:border-white/5 hover:border-blue-500/30 transition-all duration-300 premium-shadow"
                       >
                          <div className="w-32 h-32 rounded-3xl overflow-hidden shrink-0 bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/5 shadow-md">
-                            <img src={item.product.gorseller[0]} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                            <img src={item.product.images?.[0] || ''} alt="" className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                          </div>
                          
                          <div className="flex-1 flex flex-col gap-2 text-center sm:text-left">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                                {item.product.ad}
+                                {item.product.name}
                             </h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                               Kategori: {item.product.kategori}
+                               Kategori: {item.product.category}
                             </p>
                             <p className="text-xs text-blue-600 font-bold uppercase tracking-widest mt-1">
-                               Stok: {item.product.stok}
+                               Stok: {item.product.stock}
                             </p>
                          </div>
 
@@ -112,37 +140,20 @@ const CartPage: React.FC = () => {
                        </div>
                        <div className="flex justify-between text-gray-500">
                           <span>Toplam Miktar</span>
-                          <span className="font-bold text-gray-900 dark:text-white">{items.reduce((a, b) => a + b.quantity, 0)} Adet</span>
-                       </div>
+                           <span className="font-bold text-gray-900 dark:text-white">{items.reduce((a: number, b: any) => a + b.quantity, 0)} Adet</span>
+                        </div>
                        <div className="pt-6 border-t border-gray-100 dark:border-white/5 flex justify-between">
                           <span className="text-xl font-extrabold text-gray-900 dark:text-white">Genel Toplam</span>
                           <span className="text-blue-600 font-extrabold text-xl">Fiyat Teklifi İçin...</span>
                        </div>
                     </div>
 
-                    <div className="bg-blue-50 dark:bg-blue-900/10 p-6 rounded-3xl border border-blue-100 dark:border-blue-900/50 space-y-4">
-                       <p className="text-xs font-bold text-blue-700 dark:text-blue-400 uppercase tracking-widest text-center">Misafir Teklifi</p>
-                       <div className="relative group">
-                          <input 
-                            type="email" 
-                            placeholder="E-posta Adresiniz" 
-                            className="w-full px-4 py-3 bg-white dark:bg-black border border-blue-100 dark:border-white/5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600/20 transition-all font-medium text-gray-900 dark:text-white"
-                          />
-                       </div>
-                       <p className="text-[10px] text-blue-600/70 dark:text-blue-300/70 text-center font-medium italic">Teklifiniz bu adrese gönderilecektir.</p>
-                    </div>
-
                     <button 
-                      onClick={handleQuoteRequest}
-                      disabled={isRequesting}
-                      className="group w-full flex items-center justify-center gap-4 px-10 py-6 bg-blue-600 text-white rounded-[2rem] text-xl font-bold hover:bg-blue-700 transition-all cursor-pointer shadow-xl shadow-blue-600/30 active:scale-95 disabled:bg-gray-400"
+                      onClick={() => setIsModalOpen(true)}
+                      className="group w-full flex items-center justify-center gap-4 px-10 py-6 bg-blue-600 text-white rounded-[2rem] text-xl font-bold hover:bg-blue-700 transition-all cursor-pointer shadow-xl shadow-blue-600/30 active:scale-95"
                     >
-                       {isRequesting ? 'Gönderiliyor...' : (
-                         <>
-                           Tümünü Teklif Al
-                           <HiOutlineChevronDoubleRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                         </>
-                       )}
+                      Tümünü Teklif Al
+                      <HiOutlineChevronDoubleRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                     </button>
                     
                     <p className="text-[10px] text-gray-400 text-center font-medium uppercase tracking-[0.2em]">KDV Hariçtir • Ücretsiz Danışmanlık</p>
@@ -152,6 +163,13 @@ const CartPage: React.FC = () => {
           </div>
         </Container>
       </main>
+
+      <QuoteModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        isLoggedIn={isLoggedIn}
+        onSubmit={handleQuoteRequest}
+      />
 
       <footer className="py-12 bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-white/5">
         <Container>

@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { HiOutlineUser, HiOutlineShoppingBag, HiOutlineSearch, HiOutlineMenuAlt4, HiOutlineLogout, HiOutlineLogin } from 'react-icons/hi';
 import Container from '../Container';
 import { useAuth } from '../../context/AuthContext';
+import { useCartContext } from '../../context/CartContext';
 
 const Navbar: React.FC = () => {
   const { isLoggedIn, toggleAuth } = useAuth();
+  const { totalItems } = useCartContext();
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 dark:bg-black/95 backdrop-blur-md border-b border-gray-100 dark:border-white/10 premium-shadow">
@@ -49,9 +51,11 @@ const Navbar: React.FC = () => {
             </Link>
             <Link href="/cart" className="relative p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer group text-gray-600 dark:text-gray-300">
               <HiOutlineShoppingBag className="w-6 h-6 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-              <span className="absolute top-1 right-1 w-5 h-5 bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white dark:border-black animate-bounce">
-                2
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute top-1 right-1 w-5 h-5 bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white dark:border-black animate-bounce group-hover:animate-none">
+                  {totalItems}
+                </span>
+              )}
             </Link>
             <button className="md:hidden p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors cursor-pointer text-gray-600 dark:text-gray-300">
               <HiOutlineMenuAlt4 className="w-6 h-6" />

@@ -4,19 +4,21 @@ import React, { useState } from 'react';
 import { HiOutlineShoppingCart, HiOutlineDocumentText, HiOutlineEye, HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import Link from 'next/link';
 import QuantitySelector from '../QuantitySelector';
+import { useCartContext } from '../../context/CartContext';
 
 interface ProductCardProps {
   product: {
     id: string;
-    ad: string;
-    kategori: string;
-    aciklama: string;
-    stok: number;
-    gorseller: string[];
+    name: string;
+    category: string;
+    description: string;
+    stock: number;
+    images: string[];
   };
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addToCart } = useCartContext();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
@@ -24,20 +26,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setCurrentImageIndex((prev) => (prev + 1) % product.gorseller.length);
+    setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
   };
 
   const prevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    setCurrentImageIndex((prev) => (prev - 1 + product.gorseller.length) % product.gorseller.length);
+    setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     setIsAdding(true);
-    // Simulate API call
+    
+    addToCart(product, quantity);
+    
     setTimeout(() => setIsAdding(false), 1000);
   };
 
@@ -46,13 +50,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Image Section */}
       <Link href={`/products/${product.id}`} className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-zinc-800 cursor-pointer">
         <img 
-          src={product.gorseller[currentImageIndex] || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop"} 
-          alt={product.ad}
+          src={product.images[currentImageIndex] || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop"} 
+          alt={product.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         
         {/* Navigation Overlays */}
-        {product.gorseller.length > 1 && (
+        {product.images.length > 1 && (
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button 
               onClick={prevImage}
@@ -72,11 +76,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Badges */}
         <div className="absolute top-6 left-6 flex flex-col gap-2">
           <span className="px-4 py-1.5 bg-white/90 dark:bg-black/80 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest text-blue-600 shadow-sm border border-white/20">
-            {product.kategori}
+            {product.category}
           </span>
-          {product.stok < 10 && (
+          {product.stock < 10 && (
             <span className="px-4 py-1.5 bg-red-500/90 text-white rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm">
-              Son {product.stok} Adet
+              Son {product.stock} Adet
             </span>
           )}
         </div>
@@ -86,10 +90,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="p-8 flex flex-col flex-1 gap-6">
         <Link href={`/products/${product.id}`} className="flex flex-col gap-2 cursor-pointer">
           <h3 className="text-xl font-extrabold text-gray-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition-colors">
-            {product.ad}
+            {product.name}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed font-medium">
-            {product.aciklama}
+            {product.description}
           </p>
         </Link>
 

@@ -4,21 +4,21 @@ import { useState, useMemo } from 'react';
 
 export interface Product {
   id: string;
-  ad: string;
-  kategori: string;
-  aciklama: string;
-  stok: number;
-  gorseller: string[];
+  name: string;
+  category: string;
+  description: string;
+  stock: number;
+  images: string[];
 }
 
 const DUMMY_PRODUCTS: Product[] = [
   {
     id: '1',
-    ad: 'Endüstriyel Robot Kol v4',
-    kategori: 'Endüstriyel',
-    aciklama: '6 eksenli yüksek hassasiyetli üretim robotu. Ağır yük kapasiteli ve enerji verimli.',
-    stok: 12,
-    gorseller: [
+    name: 'Endüstriyel Robot Kol v4',
+    category: 'Endüstriyel',
+    description: '6 eksenli yüksek hassasiyetli üretim robotu. Ağır yük kapasiteli ve enerji verimli.',
+    stock: 12,
+    images: [
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80'
@@ -26,55 +26,55 @@ const DUMMY_PRODUCTS: Product[] = [
   },
   {
     id: '2',
-    ad: 'Hassas Lazer Kesim Masası',
-    kategori: 'Endüstriyel',
-    aciklama: 'CNC kontrollü 3000W fiber lazer kesim ünitesi. Çelik ve alüminyum için ideal.',
-    stok: 5,
-    gorseller: [
+    name: 'Hassas Lazer Kesim Masası',
+    category: 'Endüstriyel',
+    description: 'CNC kontrollü 3000W fiber lazer kesim ünitesi. Çelik ve alüminyum için ideal.',
+    stock: 5,
+    images: [
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80'
     ]
   },
   {
     id: '3',
-    ad: 'Nexus Pro İş İstasyonu',
-    kategori: 'Elektronik',
-    aciklama: '32 çekirdekli işlemci, 128GB RAM ve RTX 4090 GPU ile donatılmış mühendislik bilgisayarı.',
-    stok: 25,
-    gorseller: [
+    name: 'Nexus Pro İş İstasyonu',
+    category: 'Elektronik',
+    description: '32 çekirdekli işlemci, 128GB RAM ve RTX 4090 GPU ile donatılmış mühendislik bilgisayarı.',
+    stock: 25,
+    images: [
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80'
     ]
   },
   {
     id: '4',
-    ad: 'ErgoDesign Akıllı Ofis Koltuğu',
-    kategori: 'Mobilya',
-    aciklama: 'Vücut ısısına duyarlı file yapılı, bel destekli ve 4D kolçaklı premium tasarım.',
-    stok: 50,
-    gorseller: [
+    name: 'ErgoDesign Akıllı Ofis Koltuğu',
+    category: 'Mobilya',
+    description: 'Vücut ısısına duyarlı file yapılı, bel destekli ve 4D kolçaklı premium tasarım.',
+    stock: 50,
+    images: [
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80'
     ]
   },
   {
     id: '5',
-    ad: 'UltraScale Hassas Terazi',
-    kategori: 'Laboratuvar',
-    aciklama: '0.0001g hassasiyetle ölçüm yapabilen, kalibrasyon sertifikalı laboratuvar terazisi.',
-    stok: 8,
-    gorseller: [
+    name: 'UltraScale Hassas Terazi',
+    category: 'Laboratuvar',
+    description: '0.0001g hassasiyetle ölçüm yapabilen, kalibrasyon sertifikalı laboratuvar terazisi.',
+    stock: 8,
+    images: [
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80'
     ]
   },
   {
     id: '6',
-    ad: 'SmartHub Veri Toplama Terminali',
-    kategori: 'Elektronik',
-    aciklama: 'IoT uyumlu kablosuz sensör ağ geçidi. Çoklu protokol desteği ve bulut entegrasyonu.',
-    stok: 42,
-    gorseller: [
+    name: 'SmartHub Veri Toplama Terminali',
+    category: 'Elektronik',
+    description: 'IoT uyumlu kablosuz sensör ağ geçidi. Çoklu protokol desteği ve bulut entegrasyonu.',
+    stock: 42,
+    images: [
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&q=80'
     ]
@@ -88,12 +88,12 @@ export const useProducts = () => {
 
   const filteredProducts = useMemo(() => {
     return DUMMY_PRODUCTS
-      .filter(p => p.ad.toLowerCase().includes(searchTerm.toLowerCase()))
-      .filter(p => (category ? p.kategori === category : true))
+      .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .filter(p => (category ? p.category === category : true))
       .sort((a, b) => {
-        if (sortBy === 'asc') return a.ad.localeCompare(b.ad);
-        if (sortBy === 'desc') return b.ad.localeCompare(a.ad);
-        if (sortBy === 'stock') return b.stok - a.stok;
+        if (sortBy === 'asc') return a.name.localeCompare(b.name);
+        if (sortBy === 'desc') return b.name.localeCompare(a.name);
+        if (sortBy === 'stock') return b.stock - a.stock;
         return 0;
       });
   }, [searchTerm, category, sortBy]);

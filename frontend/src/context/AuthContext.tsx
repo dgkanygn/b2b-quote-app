@@ -4,11 +4,11 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface UserData {
   email: string;
-  firmaAdi: string;
-  firmaUnvan: string;
-  vergiDairesi: string;
-  vergiNo: string;
-  firmaBuyuklugu: string;
+  companyName: string;
+  companyTitle: string;
+  taxOffice: string;
+  taxNumber: string;
+  companySize: string;
 }
 
 interface AuthContextType {
@@ -23,11 +23,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const DUMMY_USER: UserData = {
   email: 'iletisim@nexusb2b.com',
-  firmaAdi: 'Nexus Global Ticaret',
-  firmaUnvan: 'Nexus Global İç ve Dış Ticaret LTD. ŞTİ.',
-  vergiDairesi: 'Beyoğlu V.D.',
-  vergiNo: '1234567890',
-  firmaBuyuklugu: 'Büyük (250+ Çalışan)'
+  companyName: 'Nexus Global Ticaret',
+  companyTitle: 'Nexus Global İç ve Dış Ticaret LTD. ŞTİ.',
+  taxOffice: 'Beyoğlu V.D.',
+  taxNumber: '1234567890',
+  companySize: 'Büyük (250+ Çalışan)'
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

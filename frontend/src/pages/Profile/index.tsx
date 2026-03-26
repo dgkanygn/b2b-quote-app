@@ -24,7 +24,7 @@ const ProfilePage: React.FC = () => {
   const profileData = {
     ...user,
     ...authUser,
-    name: authUser?.firmaAdi || user.name,
+    name: authUser?.companyName || user.name,
     email: authUser?.email || user.email
   };
 
@@ -82,21 +82,21 @@ const ProfilePage: React.FC = () => {
                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Unvan</span>
                          <div className="flex items-start gap-3 text-gray-600 dark:text-gray-300 font-bold text-sm leading-relaxed">
                             <HiOutlineIdentification className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" />
-                            <span>{profileData.firmaUnvan}</span>
+                            <span>{profileData.companyTitle}</span>
                          </div>
                       </div>
                       <div className="flex flex-col gap-1">
                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vergi Dairesi / No</span>
                          <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-bold text-sm">
                             <HiOutlineLocationMarker className="w-5 h-5 text-emerald-600" />
-                            <span>{profileData.vergiDairesi} - {profileData.vergiNo}</span>
+                            <span>{profileData.taxOffice} - {profileData.taxNumber}</span>
                          </div>
                       </div>
                       <div className="flex flex-col gap-1">
                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Firma Büyüklüğü</span>
                          <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-bold text-sm">
                             <HiOutlineUserGroup className="w-5 h-5 text-amber-600" />
-                            <span>{profileData.firmaBuyuklugu}</span>
+                            <span>{profileData.companySize}</span>
                          </div>
                       </div>
                    </div>
