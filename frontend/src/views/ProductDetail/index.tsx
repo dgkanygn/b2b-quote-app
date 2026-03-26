@@ -35,21 +35,21 @@ const ProductDetailPage: React.FC = () => {
             <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-left-8 duration-700">
                <div className="relative aspect-square rounded-[3rem] overflow-hidden bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-white/10 group shadow-2xl">
                   <img 
-                    src={product.gorseller[currentImage]} 
-                    alt={product.ad}
+                    src={product.images[currentImage]} 
+                    alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.05]"
                   />
                   {/* Prev/Next buttons */}
-                  {product.gorseller.length > 1 && (
+                  {product.images.length > 1 && (
                      <>
                         <button 
-                          onClick={() => setCurrentImage((prev) => (prev - 1 + product.gorseller.length) % product.gorseller.length)}
+                          onClick={() => setCurrentImage((prev) => (prev - 1 + product.images.length) % product.images.length)}
                           className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/80 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all text-gray-900 dark:text-white"
                         >
                           <HiChevronLeft className="w-8 h-8" />
                         </button>
                         <button 
-                          onClick={() => setCurrentImage((prev) => (prev + 1) % product.gorseller.length)}
+                          onClick={() => setCurrentImage((prev) => (prev + 1) % product.images.length)}
                           className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 dark:bg-black/80 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all text-gray-900 dark:text-white"
                         >
                           <HiChevronRight className="w-8 h-8" />
@@ -60,7 +60,7 @@ const ProductDetailPage: React.FC = () => {
 
                {/* Thumbnails */}
                <div className="flex items-center gap-6 overflow-x-auto pb-4 px-2 scrollbar-none">
-                  {product.gorseller.map((img, idx) => (
+                  {product.images.map((img, idx) => (
                     <button 
                       key={idx}
                       onClick={() => setCurrentImage(idx)}
@@ -77,20 +77,20 @@ const ProductDetailPage: React.FC = () => {
                {/* Label & Status */}
                <div className="flex items-center gap-4">
                   <span className="px-6 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full text-xs font-bold uppercase tracking-widest border border-blue-100 dark:border-blue-800">
-                    {product.kategori}
+                    {product.category}
                   </span>
                   <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs uppercase tracking-widest px-6 py-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-full border border-emerald-100 dark:border-emerald-800">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                    Stokta: {product.stok} adet
+                    Stokta: {product.stock} adet
                   </div>
                </div>
 
                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-[1.1]">
-                 {product.ad}
+                 {product.name}
                </h1>
 
                <div className="text-xl text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-xl">
-                 {product.aciklama}
+                 {product.description}
                </div>
 
                {/* Features / Specs */}

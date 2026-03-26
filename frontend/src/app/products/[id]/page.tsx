@@ -1,4 +1,4 @@
-import ProductDetailPage from "../../../pages/ProductDetail";
+import ProductDetailPage from "../../../views/ProductDetail";
 
 export default function Page() {
   return <ProductDetailPage />;
