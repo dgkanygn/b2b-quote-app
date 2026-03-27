@@ -2,9 +2,10 @@ import pool from '../config/db.js';
 import bcrypt from 'bcryptjs';
 
 const migrate = async () => {
-  const client = await pool.connect();
+  let client;
 
   try {
+    client = await pool.connect();
     console.log('🔄 Running migrations...');
 
     await client.query('BEGIN');
@@ -94,13 +95,16 @@ const migrate = async () => {
     await client.query('COMMIT');
     console.log('🎉 All migrations completed successfully!');
   } catch (err) {
-    await client.query('ROLLBACK');
+    if (client) await client.query('ROLLBACK');
     console.error('❌ Migration failed:', err.message);
     throw err;
   } finally {
-    client.release();
+    if (client) client.release();
     await pool.end();
   }
 };
 
-migrate().catch(() => process.exit(1));
+migrate().catch((err) => {
+  console.error('Fatal error:', err);
+  process.exit(1);
+});
