@@ -12,17 +12,40 @@ import { useCartContext } from '../../context/CartContext';
 const ProductDetailPage: React.FC = () => {
   const params = useParams();
   const id = params?.id as string;
-  const { product } = useProductDetail(id);
+  const { product, isLoading, error } = useProductDetail(id);
   const { addToCart } = useCartContext();
   const [currentImage, setCurrentImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = () => {
+    if (!product) return;
     setIsAdding(true);
-    addToCart(product, quantity);
+    addToCart({ ...product, id: String(product.id) }, quantity);
     setTimeout(() => setIsAdding(false), 800);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white dark:bg-black">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white dark:bg-black">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-xl font-bold text-gray-400">{error || 'Ürün bulunamadı.'}</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-black">

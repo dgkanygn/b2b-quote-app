@@ -1,45 +1,59 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-interface UserData {
-  email: string;
-  companyName: string;
-  companyTitle: string;
-  taxOffice: string;
-  taxNumber: string;
-  companySize: string;
-}
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { authService } from '../services/authService';
+import type { User } from '../types';
+import type { RegisterData } from '../services/authService';
 
 interface AuthContextType {
   isLoggedIn: boolean;
-  user: UserData | null;
-  login: () => void;
-  logout: () => void;
-  toggleAuth: () => void;
+  user: User | null;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const DUMMY_USER: UserData = {
-  email: 'iletisim@nexusb2b.com',
-  companyName: 'Nexus Global Ticaret',
-  companyTitle: 'Nexus Global İç ve Dış Ticaret LTD. ŞTİ.',
-  taxOffice: 'Beyoğlu V.D.',
-  taxNumber: '1234567890',
-  companySize: 'Büyük (250+ Çalışan)'
-};
-
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<UserData | null>(DUMMY_USER);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = () => setIsLoggedIn(true);
-  const logout = () => setIsLoggedIn(false);
-  const toggleAuth = () => setIsLoggedIn(prev => !prev);
+  const isLoggedIn = !!user;
+
+  // On mount, check for existing session via cookie
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const me = await authService.getMe();
+        setUser(me);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkSession();
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
+    const user = await authService.login(email, password);
+    setUser(user);
+  }, []);
+
+  const register = useCallback(async (registerData: RegisterData) => {
+    const user = await authService.register(registerData);
+    setUser(user);
+  }, []);
+
+  const logout = useCallback(async () => {
+    await authService.logout();
+    setUser(null);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout, toggleAuth }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

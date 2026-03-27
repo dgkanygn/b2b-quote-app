@@ -8,7 +8,7 @@ import { useCartContext } from '../../context/CartContext';
 
 interface ProductCardProps {
   product: {
-    id: string;
+    id: string | number;
     name: string;
     category: string;
     description: string;
@@ -40,7 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     e.preventDefault();
     setIsAdding(true);
     
-    addToCart(product, quantity);
+    addToCart({ ...product, id: String(product.id) }, quantity);
     
     setTimeout(() => setIsAdding(false), 1000);
   };

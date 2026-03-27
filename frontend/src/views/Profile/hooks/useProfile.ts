@@ -1,20 +1,39 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { quoteService } from '../../../services/quoteService';
+import { useAuth } from '../../../context/AuthContext';
+
+interface UserQuote {
+  id: number;
+  status: string;
+  total_price: number;
+  created_at: string;
+  items: any[] | null;
+}
 
 export const useProfile = () => {
-  const [user, setUser] = useState({
-    name: 'Doğukan B2B',
-    email: 'dogukan@nexus.com',
-    role: 'Satın Alma Sorumlusu',
-    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80'
-  });
+  const { user, isLoggedIn } = useAuth();
+  const [quotes, setQuotes] = useState<UserQuote[]>([]);
+  const [loadingQuotes, setLoadingQuotes] = useState(false);
 
-  const [quotes, setQuotes] = useState([
-    { id: 'QT-2026-001', date: '2026-03-20', status: 'Cevaplandı', items: 5, totalEstimate: '12.500 TL' },
-    { id: 'QT-2026-002', date: '2026-03-24', status: 'Beklemede', items: 2, totalEstimate: '4.200 TL' },
-    { id: 'QT-2026-003', date: '2026-03-25', status: 'Hazırlanıyor', items: 12, totalEstimate: '45.000 TL' }
-  ]);
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    const fetchQuotes = async () => {
+      setLoadingQuotes(true);
+      try {
+        const data = await quoteService.getUserQuotes();
+        setQuotes(data as any[]);
+      } catch {
+        setQuotes([]);
+      } finally {
+        setLoadingQuotes(false);
+      }
+    };
+
+    fetchQuotes();
+  }, [isLoggedIn]);
 
   const handleDeleteAccount = () => {
     if (confirm("Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.")) {
@@ -22,9 +41,39 @@ export const useProfile = () => {
     }
   };
 
+  // Map API user data to display format
+  const profileUser = user ? {
+    name: user.company_name || '',
+    email: user.email || '',
+    role: 'Satın Alma Sorumlusu',
+    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80'
+  } : {
+    name: '',
+    email: '',
+    role: '',
+    avatar: ''
+  };
+
+  // Map quotes for profile display
+  const displayQuotes = quotes.map(q => {
+    const statusMap: Record<string, string> = {
+      pending: 'Beklemede',
+      responded: 'Cevaplandı',
+      rejected: 'Reddedildi'
+    };
+    return {
+      id: `QT-${q.id}`,
+      date: new Date(q.created_at).toLocaleDateString('tr-TR'),
+      status: statusMap[q.status] || q.status,
+      items: q.items?.length || 0,
+      totalEstimate: q.total_price > 0 ? `${q.total_price.toLocaleString('tr-TR')} TL` : 'Teklif Bekleniyor'
+    };
+  });
+
   return {
-    user,
-    quotes,
+    user: profileUser,
+    quotes: displayQuotes,
+    loadingQuotes,
     handleDeleteAccount
   };
 };

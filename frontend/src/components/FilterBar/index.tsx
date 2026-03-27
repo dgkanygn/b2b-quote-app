@@ -1,7 +1,8 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HiOutlineSearch, HiOutlineAdjustments, HiOutlineChevronDown } from 'react-icons/hi';
+import { productService } from '../../services/productService';
 
 interface FilterBarProps {
   onSearchChange: (value: string) => void;
@@ -14,6 +15,20 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onCategoryChange, 
   onSortChange 
 }) => {
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const cats = await productService.getCategories();
+        setCategories(cats);
+      } catch {
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <div className="flex flex-col lg:flex-row items-center gap-6 p-8 bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-gray-100 dark:border-white/5 premium-shadow">
       {/* Search Input */}
@@ -35,10 +50,9 @@ const FilterBar: React.FC<FilterBarProps> = ({
             className="w-full h-16 px-6 bg-gray-50 dark:bg-black border border-gray-100 dark:border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600/50 transition-all font-semibold text-gray-900 dark:text-white appearance-none cursor-pointer"
           >
             <option value="">Tüm Kategoriler</option>
-            <option value="Elektronik">Elektronik</option>
-            <option value="Endüstriyel">Endüstriyel</option>
-            <option value="Mobilya">Mobilya</option>
-            <option value="Ofis">Ofis</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
           </select>
           <HiOutlineChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
         </div>

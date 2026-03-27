@@ -1,60 +1,51 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
-interface AdminData {
-  email: string;
-  name: string;
-  role: 'superadmin' | 'editor';
-}
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { adminService } from '../services/adminService';
+import type { AdminData } from '../services/adminService';
 
 interface AdminAuthContextType {
   isAdminLoggedIn: boolean;
   admin: AdminData | null;
+  loading: boolean;
   adminLogin: (email: string, password: string) => Promise<boolean>;
-  adminLogout: () => void;
+  adminLogout: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-const DUMMY_ADMIN: AdminData = {
-  email: 'admin@nexusb2b.com',
-  name: 'Nexus Admin',
-  role: 'superadmin'
-};
-
 export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [admin, setAdmin] = useState<AdminData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // For demo purposes, check local storage or similar
+  const isAdminLoggedIn = !!admin;
+
+  // On mount, check for existing admin session via cookie
   useEffect(() => {
-    const savedAdmin = localStorage.getItem('isAdminLoggedIn');
-    if (savedAdmin === 'true') {
-      setIsAdminLoggedIn(true);
-      setAdmin(DUMMY_ADMIN);
-    }
+    const checkSession = async () => {
+      const me = await adminService.getMe();
+      setAdmin(me);
+      setLoading(false);
+    };
+    checkSession();
   }, []);
 
-  const adminLogin = async (email: string, password: string) => {
-    // Demo implementation
-    if (email === 'admin@nexusb2b.com' && password === 'admin123') {
-      setIsAdminLoggedIn(true);
-      setAdmin(DUMMY_ADMIN);
-      localStorage.setItem('isAdminLoggedIn', 'true');
+  const adminLogin = useCallback(async (email: string, password: string): Promise<boolean> => {
+    const result = await adminService.login(email, password);
+    if (result) {
+      setAdmin(result);
       return true;
     }
     return false;
-  };
+  }, []);
 
-  const adminLogout = () => {
-    setIsAdminLoggedIn(false);
+  const adminLogout = useCallback(async () => {
+    await adminService.logout();
     setAdmin(null);
-    localStorage.removeItem('isAdminLoggedIn');
-  };
+  }, []);
 
   return (
-    <AdminAuthContext.Provider value={{ isAdminLoggedIn, admin, adminLogin, adminLogout }}>
+    <AdminAuthContext.Provider value={{ isAdminLoggedIn, admin, loading, adminLogin, adminLogout }}>
       {children}
     </AdminAuthContext.Provider>
   );

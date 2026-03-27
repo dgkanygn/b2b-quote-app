@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export const useAuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,20 +21,46 @@ export const useAuthForm = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const { login, register } = useAuth();
+  const router = useRouter();
+
   const toggleMode = () => setIsLogin(!isLogin);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!isLogin && password !== confirmPassword) {
-      alert("Şifreler eşleşmiyor!");
+      toast.error("Şifreler eşleşmiyor!");
       return;
     }
+
     setIsLoading(true);
-    setTimeout(() => {
+
+    try {
+      if (isLogin) {
+        await login(email, password);
+        toast.success('Giriş başarılı! Hoş geldiniz.');
+        router.push('/products');
+      } else {
+        await register({
+          email,
+          password,
+          company_name: companyName,
+          company_title: companyTitle || undefined,
+          tax_office: taxOffice || undefined,
+          tax_number: taxNumber || undefined,
+          company_size: companySize || undefined,
+        });
+        toast.success('Kayıt başarılı! Hoş geldiniz.');
+        router.push('/products');
+      }
+    } catch (err: any) {
+      const message = err?.response?.data?.error || 'Bir hata oluştu. Lütfen tekrar deneyin.';
+      toast.error(message);
+    } finally {
       setIsLoading(false);
-      alert(`${isLogin ? 'Giriş yapıldı' : 'Kayıt talebiniz alındı'}! Hoş geldiniz.`);
-    }, 1500);
+    }
   };
 
   return {

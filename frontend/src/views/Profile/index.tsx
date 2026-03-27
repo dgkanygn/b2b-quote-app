@@ -18,14 +18,17 @@ import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 
 const ProfilePage: React.FC = () => {
-  const { user, quotes, handleDeleteAccount } = useProfile();
-  const { user: authUser, isLoggedIn } = useAuth();
+  const { user: profileUser, quotes, handleDeleteAccount, loadingQuotes } = useProfile();
+  const { user: authUser, isLoggedIn, logout } = useAuth();
   
   const profileData = {
-    ...user,
-    ...authUser,
-    name: authUser?.companyName || user.name,
-    email: authUser?.email || user.email
+    ...profileUser,
+    name: authUser?.company_name || profileUser.name,
+    email: authUser?.email || profileUser.email,
+    companyTitle: authUser?.company_title || '',
+    taxOffice: authUser?.tax_office || '',
+    taxNumber: authUser?.tax_number || '',
+    companySize: authUser?.company_size || '',
   };
 
   return (
@@ -56,10 +59,10 @@ const ProfilePage: React.FC = () => {
                     </div>
                   </div>
                   <div className="relative pt-8 border-t border-white/10 space-y-6">
-                    <div className="flex items-center gap-4 group cursor-pointer hover:bg-white/5 p-4 rounded-2xl transition-all">
+                    <button onClick={async () => { await logout(); window.location.href = '/'; }} className="w-full flex items-center gap-4 group cursor-pointer hover:bg-white/5 p-4 rounded-2xl transition-all">
                       <HiOutlineLogout className="w-6 h-6 text-blue-200" />
                       <span className="font-bold">Oturumu Kapat</span>
-                    </div>
+                    </button>
                     <button onClick={handleDeleteAccount} className="w-full flex items-center gap-4 p-4 text-red-300 hover:text-white hover:bg-red-500/20 rounded-2xl transition-all cursor-pointer font-bold">
                        <HiOutlineTrash className="w-6 h-6" />
                        <span>Hesabı Sil</span>
@@ -82,21 +85,21 @@ const ProfilePage: React.FC = () => {
                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Unvan</span>
                          <div className="flex items-start gap-3 text-gray-600 dark:text-gray-300 font-bold text-sm leading-relaxed">
                             <HiOutlineIdentification className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" />
-                            <span>{profileData.companyTitle}</span>
+                            <span>{profileData.companyTitle || '-'}</span>
                          </div>
                       </div>
                       <div className="flex flex-col gap-1">
                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Vergi Dairesi / No</span>
                          <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-bold text-sm">
                             <HiOutlineLocationMarker className="w-5 h-5 text-emerald-600" />
-                            <span>{profileData.taxOffice} - {profileData.taxNumber}</span>
+                            <span>{profileData.taxOffice || '-'} - {profileData.taxNumber || '-'}</span>
                          </div>
                       </div>
                       <div className="flex flex-col gap-1">
                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Firma Büyüklüğü</span>
                          <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300 font-bold text-sm">
                             <HiOutlineUserGroup className="w-5 h-5 text-amber-600" />
-                            <span>{profileData.companySize}</span>
+                            <span>{profileData.companySize || '-'}</span>
                          </div>
                       </div>
                    </div>

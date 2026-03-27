@@ -9,43 +9,42 @@ import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 import QuoteModal from './components/QuoteModal';
 import { useCart } from './hooks/useCart';
+import { quoteService } from '../../services/quoteService';
+import toast from 'react-hot-toast';
 
 const CartPage: React.FC = () => {
   const { items, updateQuantity, removeItem, isEmpty, clearCart } = useCart();
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleQuoteRequest = (formData: any) => {
-    // Collect quote request items mapping to the new structure
-    const request_items = items.map((item: any) => ({
-      id: Math.random().toString(36).substr(2, 9),
-      request_id: 'pending...',
-      product_id: item.product.id,
-      quantity: item.quantity,
-      offered_price: 0 // Will be set by admin
-    }));
+  const handleQuoteRequest = async (formData: any) => {
+    setIsSubmitting(true);
+    try {
+      const payload: any = {
+        note: formData.note || '',
+        items: items.map((item: any) => ({
+          product_id: Number(item.product.id),
+          quantity: item.quantity,
+        })),
+      };
 
-    // Generate the main request JSON
-    const request = {
-      id: `REQ-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-      customer_id: isLoggedIn ? 'USER-ID-123' : null, // Would come from real user ID
-      guest_email: isLoggedIn ? user?.email : formData.guest_email,
-      guest_company_name: isLoggedIn ? user?.companyName : formData.guest_company_name,
-      note: formData.note,
-      status: 'pending',
-      total_price: 0, // Calculated later
-      created_at: new Date().toISOString(),
-      request_items: request_items
-    };
+      if (!isLoggedIn) {
+        payload.guest_email = formData.guest_email;
+        payload.guest_company_name = formData.guest_company_name;
+      }
 
-    console.log("=== NEW QUOTE REQUEST JSON ===");
-    console.log(JSON.stringify(request, null, 2));
-    
-    setTimeout(() => {
+      await quoteService.create(payload);
+
       clearCart();
-      setIsModalOpen(false); // Close modal after submission
-      alert("Teklif talebiniz başarıyla oluşturuldu! Konsoldan JSON çıktısını inceleyebilirsiniz.");
-    }, 500);
+      setIsModalOpen(false);
+      toast.success('Teklif talebiniz başarıyla oluşturuldu!');
+    } catch (err: any) {
+      const message = err?.response?.data?.error || 'Teklif oluşturulurken bir hata oluştu.';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleExcelDownload = () => {

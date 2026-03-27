@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { HiOutlineX, HiOutlinePlus, HiOutlinePhotograph, HiOutlineTrash } from 'react-icons/hi';
 
 interface Product {
-  id: string;
+  id: string | number;
   name: string;
   category: string;
   description: string;

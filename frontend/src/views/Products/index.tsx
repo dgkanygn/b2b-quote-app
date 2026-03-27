@@ -8,7 +8,7 @@ import ProductCard from '../../components/ProductCard';
 import { useProducts } from './hooks/useProducts';
 
 const ProductsPage: React.FC = () => {
-  const { products, setSearchTerm, setCategory, setSortBy } = useProducts();
+  const { products, setSearchTerm, setCategory, setSortBy, isLoading, error } = useProducts();
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-black">
@@ -35,7 +35,15 @@ const ProductsPage: React.FC = () => {
 
           {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12 mt-16">
-            {products.length > 0 ? (
+            {isLoading ? (
+              <div className="col-span-full flex items-center justify-center py-32">
+                <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : error ? (
+              <div className="col-span-full py-40 flex flex-col items-center justify-center space-y-6">
+                <p className="text-xl font-bold text-red-400">{error}</p>
+              </div>
+            ) : products.length > 0 ? (
               products.map((product) => (
                 <div key={product.id} className="animate-in fade-in slide-in-from-bottom-8 duration-500">
                   <ProductCard product={product} />
