@@ -1,6 +1,6 @@
 // ---- Auth ----
 export interface User {
-  id: number;
+  id: number | string;
   email: string;
   company_name: string;
   company_title: string | null;
@@ -11,7 +11,7 @@ export interface User {
 }
 
 export interface AdminUser {
-  id: number;
+  id: number | string;
   email: string;
   name: string;
   role: 'superadmin' | 'editor';
@@ -19,7 +19,7 @@ export interface AdminUser {
 
 // ---- Products ----
 export interface Product {
-  id: number;
+  id: number | string;
   name: string;
   category: string;
   description: string;
@@ -38,23 +38,24 @@ export interface PaginationInfo {
 
 // ---- Quotes ----
 export interface RequestItem {
-  id: number;
-  request_id: number;
-  product_id: number;
+  id: number | string;
+  request_id: number | string;
+  product_id: number | string;
   quantity: number;
   offered_price: number;
   product_name?: string;
   product_category?: string;
   product_images?: string[];
+  product?: Product;
 }
 
 export interface QuoteRequest {
-  id: number;
-  customer_id: number | null;
+  id: number | string;
+  customer_id: number | string | null;
   guest_email: string | null;
   guest_company_name: string | null;
-  customer_email?: string;
-  customer_company_name?: string;
+  customer_email?: string | null;
+  customer_company_name?: string | null;
   note: string;
   status: 'pending' | 'responded' | 'rejected';
   total_price: number;

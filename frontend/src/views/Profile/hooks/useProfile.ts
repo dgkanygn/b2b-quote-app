@@ -4,17 +4,11 @@ import { useState, useEffect } from 'react';
 import { quoteService } from '../../../services/quoteService';
 import { useAuth } from '../../../context/AuthContext';
 
-interface UserQuote {
-  id: number;
-  status: string;
-  total_price: number;
-  created_at: string;
-  items: any[] | null;
-}
+import type { QuoteRequest } from '../../../types';
 
 export const useProfile = () => {
   const { user, isLoggedIn } = useAuth();
-  const [quotes, setQuotes] = useState<UserQuote[]>([]);
+  const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
   const [loadingQuotes, setLoadingQuotes] = useState(false);
 
   useEffect(() => {

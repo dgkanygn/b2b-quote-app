@@ -69,7 +69,7 @@ const AdminDashboard = () => {
           <div className="flex items-center space-x-6 ml-6">
             <div className="flex items-center space-x-3 group cursor-pointer p-1.5 hover:bg-gray-50 rounded-xl transition-all">
               <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold group-hover:rotate-6 transition-transform">
-                {admin?.name.charAt(0) || <FiUser />}
+                {admin?.name?.charAt(0) || <FiUser />}
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm font-bold text-gray-900 leading-tight">{admin?.name || 'Admin Panel'}</p>

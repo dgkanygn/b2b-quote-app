@@ -2,14 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  stock: number;
-  images: string[];
-}
+import type { Product } from '../types';
 
 interface CartItem {
   product: Product;
@@ -19,8 +12,8 @@ interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (productId: string | number) => void;
+  updateQuantity: (productId: string | number, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   isEmpty: boolean;
@@ -75,11 +68,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const removeFromCart = (productId: string) => {
+  const removeFromCart = (productId: string | number) => {
     setItems(prev => prev.filter(item => item.product.id !== productId));
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (productId: string | number, quantity: number) => {
     setItems(prev =>
       prev.map(item =>
         item.product.id === productId ? { ...item, quantity: Math.max(1, quantity) } : item

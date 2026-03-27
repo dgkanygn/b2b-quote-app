@@ -1,14 +1,9 @@
 import api from '../utils/axiosInstance';
 
-interface AdminData {
-  id: number;
-  email: string;
-  name: string;
-  role: 'superadmin' | 'editor';
-}
+import type { AdminUser } from '../types';
 
 export const adminService = {
-  login: async (email: string, password: string): Promise<AdminData | null> => {
+  login: async (email: string, password: string): Promise<AdminUser | null> => {
     try {
       const { data } = await api.post('/admin/login', { email, password });
       return data.admin || data.user;
@@ -21,7 +16,7 @@ export const adminService = {
     await api.post('/admin/logout');
   },
 
-  getMe: async (): Promise<AdminData | null> => {
+  getMe: async (): Promise<AdminUser | null> => {
     try {
       const { data } = await api.get('/admin/me');
       return data.admin || data.user;
@@ -31,4 +26,4 @@ export const adminService = {
   },
 };
 
-export type { AdminData };
+export type { AdminUser };

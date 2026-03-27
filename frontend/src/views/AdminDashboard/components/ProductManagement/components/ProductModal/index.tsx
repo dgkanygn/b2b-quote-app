@@ -5,15 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { HiOutlineX, HiOutlinePlus, HiOutlinePhotograph, HiOutlineTrash } from 'react-icons/hi';
 
-interface Product {
-  id: string | number;
-  name: string;
-  category: string;
-  description: string;
-  stock: number;
-  images: string[];
-  status: 'active' | 'out_of_stock' | 'draft';
-}
+import type { Product } from '../../../../../../types';
 
 interface ProductModalProps {
   isOpen: boolean;

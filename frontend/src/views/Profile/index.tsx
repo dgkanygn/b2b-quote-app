@@ -11,7 +11,8 @@ import {
   HiOutlineTrash, 
   HiOutlineLogout,
   HiOutlineLocationMarker,
-  HiOutlineUserGroup
+  HiOutlineUserGroup,
+  HiOutlineOfficeBuilding
 } from 'react-icons/hi';
 import { useProfile } from './hooks/useProfile';
 import Link from 'next/link';
@@ -50,8 +51,8 @@ const ProfilePage: React.FC = () => {
                 <div className="relative group p-12 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-800 rounded-[3rem] text-white space-y-8 shadow-2xl overflow-hidden">
                   <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-[40px] translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-1000" />
                   <div className="relative flex flex-col items-center text-center space-y-6">
-                    <div className="w-32 h-32 rounded-[2.5rem] border-4 border-white/20 p-2 overflow-hidden shadow-xl hover:rotate-6 transition-transform group cursor-pointer">
-                      <img src={profileData.avatar} alt="" className="w-full h-full object-cover rounded-[2rem]" />
+                    <div className="w-32 h-32 rounded-[2.5rem] border-4 border-white/20 p-2 overflow-hidden shadow-xl hover:rotate-6 transition-transform group cursor-pointer flex items-center justify-center bg-white/10 backdrop-blur-sm">
+                      <HiOutlineOfficeBuilding className="w-16 h-16 text-white" />
                     </div>
                     <div className="space-y-2">
                        <h1 className="text-2xl font-extrabold tracking-tight uppercase tracking-wider line-clamp-2">{profileData.name}</h1>

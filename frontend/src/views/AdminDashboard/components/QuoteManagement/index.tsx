@@ -6,19 +6,7 @@ import QuoteDetailModal from './components/QuoteDetailModal';
 import { quoteService } from '../../../../services/quoteService';
 import toast from 'react-hot-toast';
 
-interface QuoteRequest {
-  id: number;
-  customer_id: number | null;
-  guest_email: string | null;
-  guest_company_name: string | null;
-  customer_email?: string;
-  customer_company_name?: string;
-  note: string;
-  status: 'pending' | 'responded' | 'rejected';
-  total_price: number;
-  created_at: string;
-  items?: any[];
-}
+import type { QuoteRequest } from '../../../../types';
 
 const QuoteManagement = () => {
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);

@@ -5,16 +5,10 @@ import { HiOutlineShoppingCart, HiOutlineDocumentText, HiOutlineEye, HiChevronLe
 import Link from 'next/link';
 import QuantitySelector from '../QuantitySelector';
 import { useCartContext } from '../../context/CartContext';
+import type { Product } from '../../types';
 
 interface ProductCardProps {
-  product: {
-    id: string | number;
-    name: string;
-    category: string;
-    description: string;
-    stock: number;
-    images: string[];
-  };
+  product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
@@ -40,7 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     e.preventDefault();
     setIsAdding(true);
     
-    addToCart({ ...product, id: String(product.id) }, quantity);
+    addToCart(product, quantity);
     
     setTimeout(() => setIsAdding(false), 1000);
   };

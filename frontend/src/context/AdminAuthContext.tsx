@@ -2,11 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { adminService } from '../services/adminService';
-import type { AdminData } from '../services/adminService';
+import type { AdminUser } from '../types';
 
 interface AdminAuthContextType {
   isAdminLoggedIn: boolean;
-  admin: AdminData | null;
+  admin: AdminUser | null;
   loading: boolean;
   adminLogin: (email: string, password: string) => Promise<boolean>;
   adminLogout: () => Promise<void>;
@@ -15,7 +15,7 @@ interface AdminAuthContextType {
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
 export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [admin, setAdmin] = useState<AdminData | null>(null);
+  const [admin, setAdmin] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   const isAdminLoggedIn = !!admin;
