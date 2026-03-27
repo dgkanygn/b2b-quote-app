@@ -8,7 +8,7 @@ export type DashboardTab = 'products' | 'excel-upload' | 'quotes';
 
 export const useAdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<DashboardTab>('products');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { isAdminLoggedIn, adminLogout, admin } = useAdminAuth();
   const router = useRouter();
 

@@ -31,25 +31,17 @@ const Sidebar: React.FC<SidebarProps> = ({
   adminName
 }) => {
   return (
-    <aside className={`fixed lg:relative bg-white border-r border-gray-100 min-h-screen transition-all duration-300 z-50 ${isOpen ? 'w-64' : 'w-20'}`}>
-      <div className="flex flex-col h-full">
+    <aside className={`
+      fixed lg:relative bg-white border-r border-gray-100 min-h-screen transition-all duration-300 z-50 overflow-hidden
+      ${isOpen 
+        ? 'translate-x-0 w-64 opacity-100' 
+        : '-translate-x-full lg:translate-x-0 w-64 lg:w-20'
+      }
+    `}>
+      <div className={`flex flex-col h-full ${!isOpen ? 'lg:w-20' : 'w-64'}`}>
         {/* Header */}
         <div className="p-6 flex items-center justify-between border-b border-gray-50">
-          {isOpen && (
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">N</div>
-              <span className="font-bold text-gray-900 border-none">Nexus B2B</span>
-            </div>
-          )}
-          {!isOpen && (
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mx-auto">N</div>
-          )}
-          <button 
-            onClick={toggleSidebar} 
-            className="lg:hidden p-2 text-gray-400 hover:text-gray-900 absolute top-4 -right-10 bg-white shadow-md rounded-r-lg"
-          >
-            <FiMenu className="w-5 h-5 cursor-pointer" />
-          </button>
+          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-bold text-xl mx-auto">N</div>
         </div>
 
         {/* Navigation */}
